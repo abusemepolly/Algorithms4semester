@@ -1,5 +1,5 @@
 # Algorithms4semester
-In labs 2-10 you will need adjacency matrix
+In labs 2-10 you will need adjacency matrix of graph
 
 Examples: 
 
