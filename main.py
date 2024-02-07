@@ -1,40 +1,44 @@
 from collections import deque
 
-def bfs(graph, start):
-    visited = set()
-    distance = {vertex: float('infinity') for vertex in range(len(graph))}
+def bfs(graph, start, visited):
     queue = deque([start])
-
-    distance[start] = 0
     visited.add(start)
 
     while queue:
         vertex = queue.popleft()
-        for neighbor in range(len(graph[vertex])):
-            if graph[vertex][neighbor] == 1 and neighbor not in visited:
+        for neighbor in graph[vertex]:
+            if neighbor not in visited:
                 visited.add(neighbor)
                 queue.append(neighbor)
-                distance[neighbor] = distance[vertex] + 1
 
-    return distance
+def find_components(graph):
+    visited = set()
+    components = []
 
-# Функция для чтения графа из файла с матрицей смежности
+    for vertex in graph:
+        if vertex not in visited:
+            bfs(graph, vertex, visited)
+            components.append(vertex)
+
+    return components
+
 def create_graph_from_file(filename):
     with open(filename, 'r') as file:
-        graph = [list(map(int, line.split())) for line in file.readlines()]
+        lines = file.readlines()
+        graph = {i: [] for i in range(len(lines))}
+        for i, line in enumerate(lines):
+            for j, val in enumerate(map(int, line.split())):
+                if val == 1:
+                    graph[i].append(j)
     return graph
 
-filename = '/Users/adyl/PycharmProjects/BFS1/adjacency_matrix.txt'
+filename = '/Users/adyl/PycharmProjects/BFS2/adjacency_matrix.txt'
 user_graph = create_graph_from_file(filename)
 
-# Выполнение BFS для начальной вершины 0
-start_vertex = 0
-distances = bfs(user_graph, start_vertex)
+components = find_components(user_graph)
 
-output_filename = 'output.txt'
-with open(output_filename, 'w') as file:
-    file.write("Кратчайшие расстояния от вершины " + str(start_vertex) + ":\n")
-    for vertex, distance in distances.items():
-        file.write(f'Вершина {vertex}: Расстояние {distance}\n')
+with open('output.txt', 'w') as file:
+    file.write("Количество компонент связности: " + str(len(components)) + "\n")
+    file.write("Компоненты связности: " + ', '.join(map(str, components)) + "\n")
 
-print(f"Результаты записаны в файл '{output_filename}'")
+print("Результаты записаны в файл 'output.txt'")
