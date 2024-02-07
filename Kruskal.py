@@ -1,4 +1,3 @@
-
 class DisjointSet:
     def __init__(self, n):
         self.parent = list(range(n))  # Инициализация предка каждого элемента самим собой
