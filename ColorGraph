@@ -1,0 +1,49 @@
+def read_matrix_from_file(file_path):
+    with open(file_path, 'r') as file:
+        matrix = [
+            [int(num) for num in line.split()]
+            for line in file
+        ]
+    return matrix
+
+
+def color_graph(adjacency_matrix):
+    n = len(adjacency_matrix)  # Количество вершин
+    colors = [-1] * n  # Цвета для всех вершин, изначально не раскрашены
+    available = [True] * n  # Доступность цветов
+
+    # Назначаем первой вершине первый цвет
+    colors[0] = 0
+
+    # Раскрашиваем остальные вершины
+    for u in range(1, n):
+        # Проверяем, какие цвета уже используются смежными вершинами
+        for v in range(n):
+            if adjacency_matrix[u][v] == 1 and colors[v] != -1:
+                available[colors[v]] = False
+
+        # Находим первый доступный цвет
+        clr = 0
+        while clr < n and not available[clr]:
+            clr += 1
+
+        # Назначаем вершине u этот цвет
+        colors[u] = clr
+
+        # Сбрасываем доступность цветов для следующей итерации
+        available = [True] * n
+        
+    # Определяем количество использованных цветов
+    num_colors = len(set(colors))
+
+    return num_colors, colors
+
+
+file_path = '/ColorGraph/ColorMatrix.txt'
+adjacency_matrix = read_matrix_from_file(file_path)
+num_colors, colors = color_graph(adjacency_matrix)
+
+
+print(f"Минимальное количество цветов, необходимое для раскраски графа: {num_colors}")
+for vertex, color in enumerate(colors):
+    print(f"Вершина {vertex + 1} -> Цвет {color + 1}")
