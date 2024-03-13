@@ -45,3 +45,44 @@ class RedBlackTree:
         if key < node.item:
             return self.search_tree_helper(node.left, key)
         return self.search_tree_helper(node.right, key)
+
+
+def insert(self, key):
+    # Создаем новый узел с заданным ключом и инициализируем его свойства
+    node = Node(key)
+    node.parent = None
+    node.item = key
+    node.left = node.right = self.TNULL
+    node.color = Node.RED  # Новые узлы всегда красные
+
+    # Начинаем поиск места для вставки нового узла
+    y = None
+    x = self.root
+
+    while x != self.TNULL:
+        y = x
+        if node.item < x.item:
+            x = x.left
+        else:
+            x = x.right
+
+    # y теперь ссылается на родителя для нового узла
+    node.parent = y
+    if y is None:  # Дерево было пустым
+        self.root = node
+    elif node.item < y.item:
+        y.left = node
+    else:
+        y.right = node
+
+    # Если новый узел — корень, просто перекрашиваем его в чёрный и завершаем
+    if node.parent is None:
+        node.color = Node.BLACK
+        return
+
+    # Если у нового узла нет дедушки, дерево остается валидным
+    if node.parent.parent is None:
+        return
+
+    # Балансировка дерева с новым узлом
+    self.fix_insert(node)
